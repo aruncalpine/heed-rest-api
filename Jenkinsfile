@@ -14,7 +14,7 @@ node {
 			string(credentialsId: 'BACKENDDBNAME', variable: 'ConnectionDBname'), 
 			string(credentialsId: 'BACKENDHOST', variable: 'ConnectionHost')]) {
 				sh '''set -x
-				APP_PATH=$(find /var/lib/jenkins/workspace/zno-backend/src/* -type f | egrep "application.properties")
+				APP_PATH=$(find /var/lib/jenkins/workspace/$JOB_NAME/src/* -type f | egrep "application.properties")
 				sed -i -e "s/BACKENDHOST/${ConnectionHost}/g" \\
 				-e "s/BACKENDPASSWORD/${ConnectionPassword}/g" \\
 				-e "s/BACKENDUSERNAME/${ConnectionUsername}/g" \\
@@ -33,7 +33,7 @@ node {
 			}
              
 	  stage 'Archive' 
-		  archive 'target/zno*.war'
+		  archive 'target/heed*.war'
         
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),

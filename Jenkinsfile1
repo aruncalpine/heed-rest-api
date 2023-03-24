@@ -34,11 +34,14 @@ node {
 
 			}
 
-            stage 'build2'
-            mvnHome = tool 'maven'	
-		    withEnv("MVN_HOME=$mvnHome"){
-			    sh '"$MVN_HOME/bin/mvn" install'
-			}
+      stage('Install Dependencies'){
+        mvnHome = tool 'maven'
+        withEnv(["MVN_HOME=$mvnHome"]) {
+            sh '"$MVN_HOME/bin/mvn" install'
+        }
+
+      }
+
              
 	  stage 'Archive' 
 		  archive 'target/heed*.war'
@@ -102,4 +105,3 @@ node {
              }
 
 }
-

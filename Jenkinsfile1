@@ -48,8 +48,9 @@ node {
         
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
-				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST')])
-			//	file(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', variable: 'ROOT_KEY')]) {
+				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
+			        usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'HostCred')])  {
+			//	file(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', variable: 'ROOT_KEY')])
 				
 				
 				 sh '''#!/bin/bash

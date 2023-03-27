@@ -70,7 +70,7 @@ node {
 							sleep 25
 							/opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info
 						}
-					   typeset -f | ssh  -o "StrictHostKeyChecking no" ubuntu@35.154.165.232 \
+					   typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
 							-p${PORT} -tt "$(cat);initial"
 						scp  -o "StrictHostKeyChecking no" -P${PORT} target/zno*.war \
 							root@${DEPLOY_HOST}:/opt/wildfly/current-war/zno.war

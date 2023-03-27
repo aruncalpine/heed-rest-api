@@ -21,7 +21,7 @@ node {
 				-e "s/BACKENDDBNAME/${ConnectionDBname}/g" $APP_PATH
 				cat $APP_PATH
 				'''
-				docker.image("arunr039/maven:3.6").inside() {
+				docker.image("arunr039/maven:3").inside() {
                     sh '''				
 						VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
 						echo $VERSION
@@ -38,7 +38,7 @@ node {
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
-				file(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', variable: 'ROOT_KEY')]) {
+				sshUserPrivateKey(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', keyFileVariable: 'ROOT_KEY', usernameVariable: 'USER')]) {
 				
 				
 				 sh '''#!/bin/bash

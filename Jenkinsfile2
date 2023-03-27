@@ -9,11 +9,6 @@ node {
         checkout scm
        
        stage 'Build'  
-
-        withCredentials([usernameColonPassword(credentialsId: 'HOSTUSERNAME', variable: 'username')]) {
-    // some block
-            }
-
 		withCredentials([string(credentialsId: 'BACKENDUSERNAME', variable: 'ConnectionUsername'), 
 			string(credentialsId: 'BACKENDPASSWORD', variable: 'ConnectionPassword'), 
 			string(credentialsId: 'BACKENDDBNAME', variable: 'ConnectionDBname'), 
@@ -26,7 +21,7 @@ node {
 				-e "s/BACKENDDBNAME/${ConnectionDBname}/g" $APP_PATH
 				cat $APP_PATH
 				'''
-				docker.image("siliconvalleyclouldit/maven:3").inside() {
+				docker.image("arunr039/maven:3").inside() {
                     sh '''				
 						VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
 						echo $VERSION
@@ -43,7 +38,7 @@ node {
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
-				usernameColonPassword(credentialsId: 'HOSTUSERNAME', variable: 'username')]) {
+				file(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', variable: 'ROOT_KEY')]) {
 				
 				
 				 sh '''#!/bin/bash

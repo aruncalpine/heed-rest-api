@@ -23,7 +23,7 @@ node {
 		 		'''
 				docker.image("arunr039/maven:3.6").inside() {
                     sh '''				
-						VERSION=$(git describe --tags --long | cut -c 5-)-b${BUILD_NUMBER}
+						VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
 						echo $VERSION
 						mvn --batch-mode release:update-versions
 						mvn versions:set -DnewVersion=${VERSION}
@@ -37,8 +37,9 @@ node {
         
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
-				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
-				usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'CRED')]) {
+				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST')])
+				//usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'CRED')
+												{
 				
 				
 				 sh '''#!/bin/bash

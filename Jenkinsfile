@@ -9,21 +9,21 @@ node {
         checkout scm
        
        stage 'Build'  
-		withCredentials([string(credentialsId: 'BACKENDUSERNAME', variable: 'ConnectionUsername'), 
-			string(credentialsId: 'BACKENDPASSWORD', variable: 'ConnectionPassword'), 
-			string(credentialsId: 'BACKENDDBNAME', variable: 'ConnectionDBname'), 
-			string(credentialsId: 'BACKENDHOST', variable: 'ConnectionHost')]) {
-				sh '''set -x
-				APP_PATH=$(find /var/lib/jenkins/workspace/$JOB_NAME/src/* -type f | egrep "application.properties")
-				sed -i -e "s/BACKENDHOST/${ConnectionHost}/g" \\
-				-e "s/BACKENDPASSWORD/${ConnectionPassword}/g" \\
-				-e "s/BACKENDUSERNAME/${ConnectionUsername}/g" \\
-				-e "s/BACKENDDBNAME/${ConnectionDBname}/g" $APP_PATH
-				cat $APP_PATH
-				'''
-				docker.image("siliconvalleyclouldit/maven:3").inside() {
+		 withCredentials([string(credentialsId: 'BACKENDUSERNAME', variable: 'ConnectionUsername'), 
+		 	string(credentialsId: 'BACKENDPASSWORD', variable: 'ConnectionPassword'), 
+		// 	string(credentialsId: 'BACKENDDBNAME', variable: 'ConnectionDBname'), 
+		 	string(credentialsId: 'BACKENDHOST', variable: 'ConnectionHost')]) {
+		 		sh '''set -x
+		 		APP_PATH=$(find /var/lib/jenkins/workspace/$JOB_NAME/src/* -type f | egrep "application.properties")
+		 		sed -i -e "s/BACKENDHOST/${ConnectionHost}/g" \\
+		 		-e "s/BACKENDPASSWORD/${ConnectionPassword}/g" \\
+		 		-e "s/BACKENDUSERNAME/${ConnectionUsername}/g" \\
+		 		-e "s/BACKENDDBNAME/${ConnectionDBname}/g" $APP_PATH
+		 		cat $APP_PATH
+		 		'''
+				docker.image("arunr039/maven:3.6").inside() {
                     sh '''				
-						VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
+						VERSION=$(git describe --tags --long | cut -c 5-)-b${BUILD_NUMBER}
 						echo $VERSION
 						mvn --batch-mode release:update-versions
 						mvn versions:set -DnewVersion=${VERSION}
@@ -38,7 +38,7 @@ node {
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
-				file(credentialsId: 'COMMON_KEY_ROOT_CREDENTIALS', variable: 'ROOT_KEY')]) {
+				usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'CRED')]) {
 				
 				
 				 sh '''#!/bin/bash
@@ -61,23 +61,23 @@ node {
 						}
 
 						wild_deploy () {
-							systemctl restart wildfly.service
+							sudo systemctl restart wildfly.service
 							sleep 25
-							/opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info | grep -v zno
-							[[ $? -eq 0 ]] && /opt/wildfly/bin/jboss-cli.sh --connect --command="undeploy zno.war"
+						    sudo	/opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info | grep -v heed*
+							[[ $? -eq 0 ]] && /opt/wildfly/bin/jboss-cli.sh --connect --command="undeploy heed*.war"
 							sleep 25
-							/opt/wildfly/bin/jboss-cli.sh --connect --command="deploy /opt/wildfly/current-war/zno.war --force" && \
+							sudo /opt/wildfly/bin/jboss-cli.sh --connect --command="deploy /opt/wildfly/standalone/deployments/		heed-rest-api--b$BUILD_NUMBER.war --force" && \
 							echo "New war deployed"
 							sleep 25
-							/opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info
+							sudo /opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info
 						}
 
-					   typeset -f | ssh  -o "StrictHostKeyChecking no" ubuntu@${DEPLOY_HOST} \
-							-p${PORT} -tt "$(cat);initial"
-						scp  -o "StrictHostKeyChecking no" -P${PORT} target/zno*.war \
-							root@${DEPLOY_HOST}:/opt/wildfly/current-war/zno.war
-					   typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
-					   -p${PORT} -tt "$(cat);wild_deploy" 
+						typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
+						-p${PORT} -tt "$(cat);initial"
+						scp  -o "StrictHostKeyChecking no" -P${PORT} target/heed-rest-api--b$BUILD_NUMBER.war \
+						root@${DEPLOY_HOST}:/opt/wildfly/standalone/deployments/heed-rest-api--b$BUILD_NUMBER.war
+					    typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
+					    -p${PORT} -tt "$(cat);wild_deploy" 
 							'''        
 					}    
     }
@@ -94,3 +94,4 @@ node {
              }
 
 }
+

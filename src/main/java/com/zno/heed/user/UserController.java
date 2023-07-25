@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.zno.heed.MysqlEntites.User;
+import com.zno.heed.MysqlRepositories.UsersRepository;
 import com.zno.heed.constants.CommonConstant.ResponseCode;
 import com.zno.heed.constants.CommonConstant.UserMessage;
 import com.zno.heed.response.ResponseBean;
 import com.zno.heed.services.LoggerService;
 import com.zno.heed.utils.CommonUtils;
 import com.zno.heed.utils.ZnoQuirk;
-import com.zno.heed.user.User;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -48,8 +50,6 @@ public class UserController {
 
 	@Autowired
 	private LoggerService _logService;
-	
-
 	
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);

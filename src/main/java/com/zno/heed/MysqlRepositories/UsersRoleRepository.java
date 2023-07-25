@@ -1,6 +1,9 @@
-package com.zno.heed.user;
+package com.zno.heed.MysqlRepositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.zno.heed.MysqlEntites.UsersRole;
 
 /**
  * 
@@ -12,13 +15,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Created By   : TITTU VARGHESE
  */
 
-public interface UsersRepository extends JpaRepository<User, Long> {
+@Repository
+public interface UsersRoleRepository extends JpaRepository<UsersRole, Long> {
 
-	User findByEmail(String email);
-	
-	User findByEmailAndPassword(String email, String password);
-	
-	User findByUserToken(String token);
-
-	User findByUserTokenAndAccountLockedAndEnabledAndPasswordExpired(String token, boolean b, boolean c, boolean d);
+	UsersRole findByRoleName(String string);
 }

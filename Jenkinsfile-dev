@@ -23,19 +23,20 @@ node {
 				'''
 				docker.image("arunr039/maven:3.6").inside() {
                     sh '''				
-						VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
-						echo $VERSION
-						mvn --batch-mode release:update-versions
-						mvn versions:set -DnewVersion=${VERSION}
+					#	VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
+					#	VERSION=
+					#	echo $VERSION
+					#	mvn --batch-mode release:update-versions
+					#	mvn versions:set -DnewVersion=${VERSION}
 						mvn clean install -DskipTests           
 					'''	
 				}
 			}
              
 	  stage 'Archive' 
-		  archive 'target/springbootwildfly.war'
+		  archive 'target/*.war'
         
-	  stage 'Deploy'            
+	/*  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
 				usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'CRED')]) {
@@ -77,7 +78,7 @@ node {
 					   typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
 					   -p${PORT} -tt "$(cat);wild_deploy" 
 							'''        
-					}    
+					}   */ 
     }
 	catch (e)
 	{

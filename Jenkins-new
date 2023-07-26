@@ -1,0 +1,105 @@
+pipeline {
+    agent any
+
+    environment {
+        ConnectionUsername = credentials('BACKENDUSERNAME')
+        ConnectionPassword = credentials('BACKENDPASSWORD')
+        ConnectionHost = credentials('BACKENDHOST')
+        // ConnectionDBname = credentials('BACKENDDBNAME')
+        PORT22 = credentials('PORT22')
+        HOST_IP_ADDRESS = credentials('HOST_IP_ADDRESS')
+        // HOSTCRED = credentials('HOSTCRED')
+    }
+
+    stages {
+        stage('Repo download') {
+            steps {
+                checkout()
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    def APP_PATH = sh(script: "find /var/lib/jenkins/workspace/${JOB_NAME}/src/* -type f | egrep 'application.properties'", returnStdout: true).trim()
+                    sh """
+                        sed -i -e 's/BACKENDHOST/\${ConnectionHost}/g' \\
+                               -e 's/BACKENDPASSWORD/\${ConnectionPassword}/g' \\
+                               -e 's/BACKENDUSERNAME/\${ConnectionUsername}/g' \\
+                               -e 's/BACKENDDBNAME/\${ConnectionDBname}/g' \${APP_PATH}
+                        cat \${APP_PATH}
+                    """
+                    docker.image('arunr039/maven:3.6').inside {
+                        sh '''
+                            VERSION=$(git describe --tags --long | cut -c 2-)-b${BUILD_NUMBER}
+                            echo $VERSION
+                            mvn --batch-mode release:update-versions
+                            mvn versions:set -DnewVersion=${VERSION}
+                            mvn clean install -DskipTests
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts(artifacts: 'target/heed*.war')
+            }
+        }
+
+  /*      stage('Deploy') {
+            steps {
+                script {
+                    def DEPLOY_HOST = credentials('DEPLOY_HOST')
+                    def PORT = credentials('PORT')
+                    sh """
+                        #!/bin/bash
+                        set -x
+                        set -e
+                        echo "$JOB_NAME"
+                        PORT=\${PORT:-22}
+                        ConnectionHost=\${DEPLOY_HOST}
+                        #[[ -z \$ConnectionHost ]] && exit 1
+                        initial () {
+                            set -x
+                            DATE=$(date +%F-%M)
+                            mkdir -pv /opt/wildfly/old-war/\${DATE}
+                            mkdir -pv /opt/wildfly/current-war
+                            for i in \$(ls /opt/wildfly/current-war/)
+                            do
+                                cd /opt/wildfly/current-war/
+                                mv \$i /opt/wildfly/old-war/\${DATE}/
+                            done
+                        }
+
+                        wild_deploy () {
+                            sudo systemctl restart wildfly.service
+                            sleep 25
+                            sudo	/opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info | grep -v heed*
+                            [[ \$? -eq 0 ]] && /opt/wildfly/bin/jboss-cli.sh --connect --command="undeploy heed*.war"
+                            sleep 25
+                            sudo /opt/wildfly/bin/jboss-cli.sh --connect --command="deploy /opt/wildfly/standalone/deployments/heed-rest-api--b\$BUILD_NUMBER.war --force" && \
+                            echo "New war deployed"
+                            sleep 25
+                            sudo /opt/wildfly/bin/jboss-cli.sh --connect --command=deployment-info
+                        }
+
+                        ssh -o "StrictHostKeyChecking no" root@\$DEPLOY_HOST -p\$PORT -tt "$(typeset -f); initial"
+                        scp -o "StrictHostKeyChecking no" -P\$PORT target/heed-rest-api--b\$BUILD_NUMBER.war root@\$DEPLOY_HOST:/opt/wildfly/standalone/deployments/heed-rest-api--b\$BUILD_NUMBER.war
+                        ssh -o "StrictHostKeyChecking no" root@\$DEPLOY_HOST -p\$PORT -tt "$(typeset -f); wild_deploy"
+                    """
+                }
+            }
+        } */
+    }
+
+    post {
+        always {
+            echo "Completed!!!!"
+        }
+        failure {
+            currentBuild.result = 'FAILURE'
+        }
+    }
+}

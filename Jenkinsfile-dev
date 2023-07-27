@@ -39,7 +39,7 @@ node {
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
-				sshUserPrivateKey(credentialsId: keyFileVariable: 'PRIVATE_KEY')]) {
+				sshUserPrivateKey(credentialsId:'HOSTCRED',keyFileVariable: 'PRIVATE_KEY')]) {
 				
 				
 				 sh '''#!/bin/bash

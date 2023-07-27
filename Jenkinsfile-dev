@@ -32,8 +32,8 @@ node {
 				}
 			}
              
-	  stage 'Archive' 
-		  archive 'target/heed*.war'
+/*	  stage 'Archive' 
+		  archive 'target/heed*.war' */
         
 	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),

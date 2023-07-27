@@ -36,7 +36,7 @@ node {
 	  stage 'Archive' 
 		  archive 'target/*.war'
         
-	/*  stage 'Deploy'            
+	  stage 'Deploy'            
 				withCredentials([string(credentialsId: 'PORT22', variable: 'PORT'),
 				string(credentialsId: 'HOST_IP_ADDRESS', variable: 'DEPLOY_HOST'),
 				usernameColonPassword(credentialsId: 'HOSTCRED', variable: 'CRED')]) {
@@ -78,7 +78,7 @@ node {
 					   typeset -f | ssh  -o "StrictHostKeyChecking no" root@${DEPLOY_HOST} \
 					   -p${PORT} -tt "$(cat);wild_deploy" 
 							'''        
-					}   */ 
+					}   
     }
 	catch (e)
 	{

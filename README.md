@@ -94,8 +94,21 @@ yes/no? yes
 To represent the user add the following to the server-identities definition <secret value="UGFuMjNkZWo3NyNA" />
 
 ```
-Step 6: Test the WildFly Installation
+## Step 6: Test the WildFly Installation ##
+
 ```
 http://<your_domain_or_IP_address>:8080
+
+```
+## Step 7: Access WildFly Administration Console ##
+```
+cd /opt/wildfly/bin/
+./jboss-cli.sh --connect
+```
+You will be asked to enter your administrative username and password (created in step 5):
+```
+Authenticating against security realm: ManagementRealm
+Username: wildfly
+Password:
 
 ```

@@ -1,6 +1,6 @@
 # Wildfly Server installation Instructions
 ## Pre Requisites ##
-  ###install JAVA 17 Version###
+  Install JAVA 17
 ~~~
 sudo  apt update -y
 sudo  apt install openjdk-17-jdk -y

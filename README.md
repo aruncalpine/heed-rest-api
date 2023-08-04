@@ -91,7 +91,7 @@ Added user 'wildfly' with groups  to file '/opt/wildfly-16.0.0.Final/domain/conf
 Is this new user going to be used for one AS process to connect to another AS process? 
 e.g. for a slave host controller connecting to the master or for a Remoting connection for server-to-server EJB calls.
 yes/no? yes
-To represent the user add the following to the server-identities definition <secret value="UGFuMjNkZWo3NyNA" />
+
 
 ```
 ## Step 6: Test the WildFly Installation ##
@@ -115,12 +115,35 @@ Password:
 # Configure Admin Console Web Interface #
 f you want to access the console from remote locations you’ll need to make small modifications to the wildfly.service, wildfly.conf and launch.sh files.
 
-
-Open sudo  /etc/wildfly/wildfly.conf file and append the below content at the end 
-
-The address console to bind to
+open the file and add the below content to  /etc/wildfly/wildfly.conf
 
 ```
+# The configuration you want to run
+WILDFLY_CONFIG=standalone.xml
+
+# The mode you want to run
+WILDFLY_MODE=standalone
+
+# The address to bind to
+WILDFLY_BIND=0.0.0.0
+
+# The address console to bind to
 WILDFLY_CONSOLE_BIND=0.0.0.0
+
+```
+Open the launch.sh and add the below content :
+
+```
+#!/bin/bash
+
+if [ "x$WILDFLY_HOME" = "x" ]; then
+    WILDFLY_HOME="/opt/wildfly"
+fi
+
+if [[ "$1" == "domain" ]]; then
+    $WILDFLY_HOME/bin/domain.sh -c $2 -b $3 -bmanagement $4
+else
+    $WILDFLY_HOME/bin/standalone.sh -c $2 -b $3 -bmanagement $4
+fi
 
 ```

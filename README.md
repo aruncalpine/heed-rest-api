@@ -19,5 +19,22 @@ wget https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/wildf
 tar -xf wildfly-28.0.0.Final.tar.gz
 mv wildfly-28.0.0.Final wildfly
 sudo  mv /opt/wildfly
+sudo chown -RH wildfly: /opt/wildfly
+```
+### Step 4: Configure Systemd ###
+```
+sudo mkdir -p /etc/wildfly
+```
+Copy the configuration file to the /etc/wildfly directory
+
+```
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/wildfly.conf /etc/wildfly/
+
+```
+copy the WildFly launch.sh script to the /opt/wildfly/bin/ directory
+
+```
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/launch.sh /opt/wildfly/bin/
+
 ```
 

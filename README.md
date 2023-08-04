@@ -112,3 +112,13 @@ Username: wildfly
 Password:
 
 ```
+# Configure Admin Console Web Interface #
+f you want to access the console from remote locations you’ll need to make small modifications to the wildfly.service, wildfly.conf and launch.sh files.
+
+
+Open sudo  /etc/wildfly/wildfly.conf file and append the below content at the end 
+
+The address console to bind to
+WILDFLY_CONSOLE_BIND=0.0.0.0
+
+```

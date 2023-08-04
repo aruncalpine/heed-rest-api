@@ -69,3 +69,33 @@ What type of user do you wish to add?
 (a):
 
 ```
+Select a and hit Enter:
+Next, the script will prompt you to enter the details of the new user:
+```
+Enter the details of the new user to add.
+Using realm 'ManagementRealm' as discovered from the existing property files.
+Username : wildfly
+Password recommendations are listed below. To modify these restrictions edit the add-user.properties configuration file.
+ - The password should be different from the username
+ - The password should not be one of the following restricted values {root, admin, administrator}
+ - The password should contain at least 8 characters, 1 alphabetic character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
+Password : 
+Re-enter Password : 
+What groups do you want this user to belong to? (Please enter a comma-separated list, or leave blank for none)[  ]: 
+About to add user 'wildfly' for realm 'ManagementRealm'
+Is this correct yes/no? yes
+Added user 'wildfly' to file '/opt/wildfly-16.0.0.Final/standalone/configuration/mgmt-users.properties'
+Added user 'wildfly' to file '/opt/wildfly-16.0.0.Final/domain/configuration/mgmt-users.properties'
+Added user 'wildfly' with groups  to file '/opt/wildfly-16.0.0.Final/standalone/configuration/mgmt-groups.properties'
+Added user 'wildfly' with groups  to file '/opt/wildfly-16.0.0.Final/domain/configuration/mgmt-groups.properties'
+Is this new user going to be used for one AS process to connect to another AS process? 
+e.g. for a slave host controller connecting to the master or for a Remoting connection for server-to-server EJB calls.
+yes/no? yes
+To represent the user add the following to the server-identities definition <secret value="UGFuMjNkZWo3NyNA" />
+
+```
+Step 6: Test the WildFly Installation
+```
+http://<your_domain_or_IP_address>:8080
+
+```

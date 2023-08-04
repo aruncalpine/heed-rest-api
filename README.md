@@ -119,6 +119,8 @@ f you want to access the console from remote locations you’ll need to make sma
 Open sudo  /etc/wildfly/wildfly.conf file and append the below content at the end 
 
 The address console to bind to
+
+```
 WILDFLY_CONSOLE_BIND=0.0.0.0
 
 ```

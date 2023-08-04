@@ -37,4 +37,8 @@ copy the WildFly launch.sh script to the /opt/wildfly/bin/ directory
 sudo cp /opt/wildfly/docs/contrib/scripts/systemd/launch.sh /opt/wildfly/bin/
 
 ```
+The scripts inside bin directory must have executable permission 
+```
+ sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
+```
 

@@ -57,3 +57,15 @@ Check the service status
 ```
 sudo systemctl status wildfly
 ```
+## Step 5: Configure WildFly Authentication ##
+```
+sudo /opt/wildfly/bin/add-user.sh
+```
+You’ll be asked what type of user do you wish to add:
+```
+What type of user do you wish to add? 
+ a) Management User (mgmt-users.properties) 
+ b) Application User (application-users.properties)
+(a):
+
+```

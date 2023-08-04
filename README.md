@@ -7,6 +7,11 @@ sudo  apt install openjdk-17-jdk -y
 
 ## Step 2: Create a User ##
 
+~~~
+sudo groupadd -r wildfly
+sudo useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
+~~~
+## Step 3: Download and Install WildFly ##
 ```
 WILDFLY_VERSION=28.0.0.Final
 cd /tmp

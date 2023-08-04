@@ -131,7 +131,7 @@ WILDFLY_BIND=0.0.0.0
 WILDFLY_CONSOLE_BIND=0.0.0.0
 
 ```
-Open the launch.sh and add the below content :
+Open the /opt/wildfly/bin/launch.sh and add the below content :
 
 ```
 #!/bin/bash
@@ -146,4 +146,38 @@ else
     $WILDFLY_HOME/bin/standalone.sh -c $2 -b $3 -bmanagement $4
 fi
 
+```
+Restart the service for changes to take effect:
+```
+sudo systemctl restart wildfly
+```
+Open the /etc/systemd/system/wildfly.service and add below lines:
+```
+[Unit]
+Description=The WildFly Application Server
+After=syslog.target network.target
+Before=httpd.service
+
+[Service]
+Environment=LAUNCH_JBOSS_IN_BACKGROUND=1
+EnvironmentFile=-/etc/wildfly/wildfly.conf
+User=wildfly
+LimitNOFILE=102642
+PIDFile=/var/run/wildfly/wildfly.pid
+ExecStart=/opt/wildfly/bin/launch.sh $WILDFLY_MODE $WILDFLY_CONFIG $WILDFLY_BIND $WILDFLY_CONSOLE_BIND
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
+```
+Create the /var/run/wildfly directory and set correct permissions:
+```
+sudo mkdir /var/run/wildfly/
+sudo chown wildfly: /var/run/wildfly/
+
+```
+reload daemon and restart wildfly service
+```
+sudo systemctl daemon-reload
+sudo systemctl restart wildfly
 ```

@@ -38,7 +38,22 @@ sudo cp /opt/wildfly/docs/contrib/scripts/systemd/launch.sh /opt/wildfly/bin/
 
 ```
 The scripts inside bin directory must have executable permission 
+
 ```
  sudo sh -c 'chmod +x /opt/wildfly/bin/*.sh'
-```
 
+```
+ copy the systemd unit file named to the /etc/systemd/system/ and reload daemon
+
+```
+sudo cp /opt/wildfly/docs/contrib/scripts/systemd/wildfly.service /etc/systemd/system/
+sudo systemctl daemon-reload
+```
+Start the WildFly service 
+```
+sudo systemctl start wildfly
+```
+Check the service status 
+```
+sudo systemctl status wildfly
+```

@@ -18,7 +18,7 @@ cd /tmp
 wget https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz
 tar -xf wildfly-28.0.0.Final.tar.gz
 mv wildfly-28.0.0.Final wildfly
-sudo  mv /opt/wildfly
+sudo  mv wildfly /opt/wildfly
 sudo chown -RH wildfly: /opt/wildfly
 ```
 ### Step 4: Configure Systemd ###
